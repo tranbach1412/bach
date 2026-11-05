@@ -333,6 +333,15 @@ def change_password():
         flash("Đã đổi mật khẩu.", "success")
     return redirect(url_for("dashboard"))
 
+with app.app_context():
+    # Kiểm tra và tạo các bảng nếu chưa có
+    db().execute('''CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE,
+                        password_hash TEXT,
+                        token_version INTEGER DEFAULT 0
+                    )''')
+    db().commit()
 if __name__ == "__main__":
     # Local: 127.0.0.1. Muốn mở cho máy khác trong mạng: đặt CODEHUB_HOST=0.0.0.0
     # Online thật nên chạy bằng gunicorn/waitress sau HTTPS (xem README), không dùng app.run.
