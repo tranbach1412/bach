@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Giải contest, nhận XP, lên bảng xếp hạng.</h1>
+  <p class="sub">Làm bài ở nơi tổ chức contest, gửi kết quả, và Admin sẽ duyệt để cộng điểm cho bạn.</p>
+  <div class="row"><a class="btn" href="{{ url_for('register') }}">Tạo tài khoản</a><a class="btn ghost" href="{{ url_for('login') }}">Đăng nhập</a></div>
+</section>
+{% endblock %}

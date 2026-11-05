@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Đăng ký' if mode == 'register' else 'Đăng nhập' }} · CodeHub{% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>{{ 'Tạo tài khoản' if mode == 'register' else 'Đăng nhập' }}</h1>
+  <form method="post">
+    <label for="u">Tên tài khoản</label>
+    <input id="u" name="username" required minlength="3" autocomplete="username" autofocus>
+    <label for="p">Mật khẩu{% if mode == 'register' %} (ít nhất 8 ký tự){% endif %}</label>
+    <input id="p" name="password" type="password" required minlength="{{ 8 if mode == 'register' else 1 }}" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}">
+    <p><button type="submit">{{ 'Tạo tài khoản' if mode == 'register' else 'Đăng nhập' }}</button></p>
+  </form>
+  <p class="muted">{% if mode == 'register' %}Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập</a>{% else %}Chưa có tài khoản? <a href="{{ url_for('register') }}">Đăng ký</a>{% endif %}</p>
+</div>
+{% endblock %}

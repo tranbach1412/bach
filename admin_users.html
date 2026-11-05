@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Quản lý người dùng · CodeHub{% endblock %}
+{% block content %}
+<h1>Quản lý người dùng</h1>
+<p class="sub">Đặt lại mật khẩu cho tài khoản. Để trống ô mật khẩu thì hệ thống tự tạo mật khẩu ngẫu nhiên và chỉ hiện một lần ở đầu trang. Người dùng bị đăng xuất khỏi các phiên cũ.</p>
+<div class="panel">
+  <div class="row" style="margin-bottom:10px"><input id="q" placeholder="Tìm theo tên đăng nhập" autocomplete="off" style="max-width:320px"><span class="muted" id="count">{{ users|length }} tài khoản</span></div>
+  <div class="scroll"><table style="min-width:760px">
+    <tr><th>Tài khoản</th><th>Vai trò</th><th>XP</th><th>Lượt nộp</th><th>Ngày tạo</th><th>Mật khẩu mới</th></tr>
+    <tbody id="rows">{% for u in users %}
+      <tr data-name="{{ u['username']|lower }}">
+        <td><strong>{{ u['username'] }}</strong></td>
+        <td><span class="tag {{ 'admin' if u['role'] == 'admin' }}">{{ u['role'] }}</span></td>
+        <td>{{ u['points'] }}</td><td>{{ u['submissions'] }}</td><td>{{ u['created_at'] }}</td>
+        <td><form class="row" method="post" action="{{ url_for('admin_reset_password', user_id=u['id']) }}" onsubmit="return confirm('Đặt lại mật khẩu cho {{ u['username']|e }}?');" style="flex-wrap:nowrap">
+          <input name="new_password" minlength="8" autocomplete="off" placeholder="Để trống = tự tạo" style="min-width:170px">
+          <button type="submit">Đặt lại</button></form></td>
+      </tr>{% endfor %}</tbody>
+  </table></div>
+</div>
+<script>
+const q=document.getElementById('q'),rows=[...document.querySelectorAll('#rows tr')],cnt=document.getElementById('count');
+q.addEventListener('input',()=>{const k=q.value.trim().toLowerCase();let n=0;rows.forEach(r=>{const s=r.dataset.name.includes(k);r.style.display=s?'':'none';if(s)n++});cnt.textContent=n+' tài khoản'});
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Quản lý · CodeHub{% endblock %}
+{% block content %}
+<h1>Quản lý</h1>
+<p class="sub">Tạo contest, duyệt kết quả và quản lý tài khoản. <a href="{{ url_for('admin_users') }}">Mở trang quản lý người dùng</a></p>
+<div class="grid">
+  <section>
+    <div class="panel"><h2>Lượt nộp cần xử lý</h2><div class="scroll"><table>
+      <tr><th>Người dùng</th><th>Contest</th><th>Ghi chú</th><th>Trạng thái</th><th></th></tr>
+      {% for s in submissions %}<tr>
+        <td>{{ s['username'] }}</td><td>{{ s['title'] }} (+{{ s['reward'] }})</td>
+        <td style="max-width:260px;white-space:pre-wrap;word-break:break-word">{{ s['note'] }}</td>
+        <td><span class="tag {{ s['status'] }}">{{ {'Pending':'Chờ duyệt','Approved':'Đã duyệt','Rejected':'Bị từ chối'}[s['status']] }}</span></td>
+        <td>{% if s['status'] == 'Pending' %}<div class="row">
+          <form method="post" action="{{ url_for('review_submission', submission_id=s['id'], action='approve') }}"><button>Duyệt</button></form>
+          <form method="post" action="{{ url_for('review_submission', submission_id=s['id'], action='reject') }}"><button class="ghost">Từ chối</button></form></div>{% endif %}</td>
+      </tr>{% else %}<tr><td colspan="5" class="muted">Chưa có lượt nộp nào.</td></tr>{% endfor %}
+    </table></div></div>
+    <div class="panel"><h2>Contest hiện có</h2><div class="scroll"><table>
+      <tr><th>Tên</th><th>Độ khó</th><th>XP</th><th>Ngày</th><th></th></tr>
+      {% for c in contests %}<tr><td>{{ c['title'] }}</td><td>{{ c['difficulty'] }}</td><td>{{ c['reward'] }}</td><td>{{ c['contest_date'] }}</td>
+        <td><form method="post" action="{{ url_for('delete_contest', contest_id=c['id']) }}" onsubmit="return confirm('Xóa contest này và các lượt nộp liên quan?');"><button class="danger">Xóa</button></form></td></tr>
+      {% else %}<tr><td colspan="5" class="muted">Chưa có contest nào.</td></tr>{% endfor %}
+    </table></div></div>
+  </section>
+  <aside><div class="panel"><h2>Tạo contest</h2>
+    <form method="post" action="{{ url_for('create_contest') }}">
+      <label for="t">Tên contest</label><input id="t" name="title" required>
+      <label for="d">Mô tả</label><textarea id="d" name="description"></textarea>
+      <label for="df">Độ khó</label><select id="df" name="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select>
+      <label for="r">Điểm thưởng (XP)</label><input id="r" name="reward" type="number" min="0" max="100000" value="100">
+      <label for="dt">Ngày diễn ra</label><input id="dt" name="contest_date" type="date">
+      <p><button type="submit">Tạo contest</button></p>
+    </form></div></aside>
+</div>
+{% endblock %}
